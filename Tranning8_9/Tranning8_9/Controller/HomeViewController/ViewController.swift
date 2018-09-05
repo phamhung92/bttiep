@@ -14,9 +14,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var tableView: UITableView!
     
     var arrMusic = [MusicModel]()
+    var newarrMusic = [MusicModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         searchBar.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
@@ -25,6 +27,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         MusicRouter(endpoint: .search).request { (result) in
             switch result{
             case .success(let data):
+                
                 if let musics = data as? [MusicModel]{
                     self.arrMusic = musics
                     DispatchQueue.main.async {
@@ -43,6 +46,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return arrMusic.count
     }
     
@@ -52,7 +56,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         cell.lblName.text = arrMusic[indexPath.row].trackName
         cell.lblTime.text = "\(arrMusic[indexPath.row].trackTimeMillis ?? 0 )"
         if let urlImg = arrMusic[indexPath.row].artworkUrl100{
-            URLSession.shared.dataTask(with: URL(string: urlImg)!) { data, response, error in
+            URLSession.shared.dataTask(with:URL(string: urlImg)!) { data, response, error in
                 guard
                     let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
                     let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
@@ -64,17 +68,54 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 }
                 }.resume()
         }
+        
+        
         return cell
         
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        newarrMusic = arrMusic.filter({ animal -> Bool in
+            guard let text = searchBar.text else {return false}
+            return (animal.trackName?.contains(text))!
+        })
+        if(searchBar.text == ""){
+            MusicRouter(endpoint: .search).request { (result) in
+                switch result{
+                case .success(let data):
+                    
+                    if let musics = data as? [MusicModel]{
+                        self.arrMusic = musics
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    }else{
+                        print("Api is error")
+                    }
+                    return
+                case .fauilure(let err):
+                    print(err)
+                    return
+                }
+            }
+        }
+        else {
+            self.arrMusic = newarrMusic
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            
+            }
+        }
+    }
    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         view.endEditing(false)
+        
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

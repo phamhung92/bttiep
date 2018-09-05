@@ -8,8 +8,13 @@
 
 import UIKit
 
-class MovieView: UIViewController,UITabBarDelegate{
+class MovieView: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableViewDataSource{
+   
     
+    @IBOutlet weak var MovieTableView: UITableView!
+    var arrMoview = [APITop]()
+    
+    //MARK present
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if (item.tag == 3 ){
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewManga") as! ViewManga
@@ -33,8 +38,58 @@ class MovieView: UIViewController,UITabBarDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        MovieTableView.delegate = self
+        MovieTableView.dataSource = self
+        MovieTableView.register(UINib(nibName: "CellManga", bundle: nil), forCellReuseIdentifier: "CellManga")
+        MangaRoute(endpoint: .search1) .request{ (top) in
+            switch top {
+            case .success(let data):
+                if let Movie = data as? [APITop]{
+                    self.arrMoview = Movie
+                    DispatchQueue.main.async {
+                        self.MovieTableView.reloadData()
+                    }
+                }else{
+                    print("API error")
+                }
+                
+            case .fauilure(let error):
+                print(error)
+            }
+        
+        
+        }
     }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return arrMoview.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CellManga", for: indexPath) as! CellManga
+        cell.lblTitle.text = arrMoview[indexPath.row].title
+        cell.lblMembres.text = String(describing: arrMoview[indexPath.row].members)
+        cell.lblLink.text = arrMoview[indexPath.row].url
+        if let urlImg = arrMoview[indexPath.row].image_url{
+            URLSession.shared.dataTask(with: URL(string: urlImg)!){ data,response,error in
+                guard
+                    let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                    let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                    let data = data, error == nil,
+                    let image = UIImage(data: data)
+                    else { return }
+                DispatchQueue.main.async() {
+                    cell.imgView.image = image
+                    }
+                }.resume()
+            
+        
+                
+            }
+        
+
+        return cell
+    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

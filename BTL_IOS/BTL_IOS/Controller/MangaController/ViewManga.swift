@@ -8,58 +8,175 @@
 
 import UIKit
 
-class ViewManga: UIViewController,UITableViewDelegate,UITableViewDataSource,UITabBarDelegate {
+class ViewManga: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
-    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        if (item.tag == 2) {
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewAnime") as! ViewAnime
-            present(vc, animated: true, completion: nil)
+    @IBOutlet weak var tableView: UITableView!
+    var arrManga = [APITop]()
+
+    @IBAction func Oneshots(_ sender: Any) {
+        MangaRoute(endpoint: .oneshots) .request { (top) in
+            switch top{
+                
+            case .success(let data):
+                if let Oneshots = data as? [APITop]{
+                    self.arrManga = Oneshots
+                    DispatchQueue.main.sync {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    print("Api is error")
+                }
+                return
+            case .fauilure(let error):
+                print(error)
+                return
+            }
         }
-        
     }
     
     @IBAction func Manhwa(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ManhwaView") as! ManhwaView
-        present(vc, animated: true, completion: nil)
+        MangaRoute(endpoint: .manhwa) .request { (top) in
+            switch top{
+                
+            case .success(let data):
+                if let Manhwwa = data as? [APITop]{
+                    self.arrManga = Manhwwa
+                    DispatchQueue.main.sync {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    print("Api is error")
+                }
+                return
+            case .fauilure(let error):
+                print(error)
+                return
+            }
+        }
     }
-    
+    @IBAction func Manga(_ sender: Any) {
+        MangaRoute(endpoint: .manga) .request { (top) in
+            switch top{
+                
+            case .success(let data):
+                if let Manga = data as? [APITop]{
+                    self.arrManga = Manga
+                    DispatchQueue.main.sync {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    print("Api is error")
+                }
+                return
+            case .fauilure(let error):
+                print(error)
+                return
+            }
+        }
+    }
     @IBAction func Manhua(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ManhuaView") as! ManhuaView
-        present(vc, animated: true, completion: nil)
+        MangaRoute(endpoint: .manhua) .request { (top) in
+            switch top{
+                
+            case .success(let data):
+                if let Manhua = data as? [APITop]{
+                    self.arrManga = Manhua
+                    DispatchQueue.main.sync {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    print("Api is error")
+                }
+                return
+            case .fauilure(let error):
+                print(error)
+                return
+            }
+        }
     }
-    
     @IBAction func Novels(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewNovels") as! ViewNovels
-        present(vc, animated: true, completion: nil)
+        MangaRoute(endpoint: .novels) .request { (top) in
+            switch top{
+                
+            case .success(let data):
+                if let Novels = data as? [APITop]{
+                    self.arrManga = Novels
+                    DispatchQueue.main.sync {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    print("Api is error")
+                }
+                return
+            case .fauilure(let error):
+                print(error)
+                return
+            }
+        }
     }
     
-    @IBAction func Oneshots(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "OneshotsView") as! OneshotsView
-        present(vc, animated: true, completion: nil)
-    }
     
-    
-    
-    
-    
-
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return arrManga.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellManga", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: MangaTableViewCell.identifier(), for: indexPath) as! MangaTableViewCell
+        cell.lblTitle.text = arrManga[indexPath.row].title
+        cell.lblMembres.text = String(describing: arrManga[indexPath.row].members)
+        cell.lblLink.text = arrManga[indexPath.row].url
+        if let urlImg = arrManga[indexPath.row].image_url{
+            URLSession.shared.dataTask(with: URL(string: urlImg)!){ data,response,error in
+                guard
+                    let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                    let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                    let data = data, error == nil,
+                    let image = UIImage(data: data)
+                    else { return }
+                DispatchQueue.main.async() {
+                    cell.imgView.image = image
+                }
+                }.resume()
+        }
         return cell
     }
-    
-    
-    
+       
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UINib(nibName : MangaTableViewCell.identifier(),bundle : nil), forCellReuseIdentifier: MangaTableViewCell.identifier())
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        
+        MangaRoute(endpoint: .manga) .request { (top) in
+            switch top{
+                
+            case .success(let data):
+                if let Manga = data as? [APITop]{
+                    self.arrManga = Manga
+                    DispatchQueue.main.sync {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    print("Api is error")
+                }
+                return
+            case .fauilure(let error):
+                print(error)
+                return
+            }
+        }
+        
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = storyboard?.instantiateViewController(withIdentifier: "MangaVC1")
+        self.navigationController?.pushViewController(vc!, animated: true)
     }
 
     override func didReceiveMemoryWarning() {

@@ -1,19 +1,17 @@
 //
-//  CellManga.swift
+//  MangaTableViewCell.swift
 //  BTL_IOS
 //
-//  Created by Admin on 8/8/18.
+//  Created by manhnv on 9/4/18.
 //  Copyright © 2018 Admin. All rights reserved.
 //
 
 import UIKit
 
-class CellManga: UITableViewCell {
-
+class MangaTableViewCell: UITableViewCell {
     @IBOutlet weak var imgView: UIImageView!
-    @IBOutlet weak var lblNameMaga: UILabel!
-    @IBOutlet weak var lblNameTg: UILabel!
-    @IBOutlet weak var lblNhanVat: UILabel!
+    @IBOutlet weak var lblTitle: UILabel!
+    @IBOutlet weak var lblMembres: UILabel!
     @IBOutlet weak var lblLink: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,6 +22,10 @@ class CellManga: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    class func identifier()->String{
+        return "MangaTableViewCell"
     }
     
 }
