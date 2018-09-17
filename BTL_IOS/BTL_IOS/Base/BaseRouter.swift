@@ -40,6 +40,7 @@ class BaseRouter{
             completion(.fauilure(error: "URL incorrect"))
             return
         }
+        // REVIEW: Tách phần tạo request ra 1 hàm riêng cho ngắn bớt code
         var request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: timeOut)
         request.httpMethod = method
         if let params = parameters{
@@ -76,6 +77,7 @@ class BaseRouter{
     }
 }
 
+// REVIEW: Sai chính tả
 enum APIResult{
     case success(data: Any)
     case fauilure(error: String)

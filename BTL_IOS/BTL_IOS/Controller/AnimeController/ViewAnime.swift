@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+// REVIEW: Đổi tên class. Các class ViewController
 class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableViewDataSource{
    
     @IBOutlet weak var tableView: UITableView!
@@ -15,11 +15,13 @@ class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableVi
     var arrAnime = [APITop]()
     
 
-    
+    // REVIEW: Sửa lại tên hàm theo dạng lower camel case
+    // Mấy hàm gọi API này giống hệt nhau, khác mỗi endpoint thì viết chung vào 1 hàm rồi dùng lại thôi
     @IBAction func Spacial(_ sender: Any) {
         MangaRoute(endpoint: .search2) .request { (top) in
             switch top{
             case .success(let data):
+                // REVIEW: Chú ý thêm dấu cách giữa các dấu ngoặc
                 if let Animes = data as? [APITop]{
                     self.arrAnime = Animes
                     DispatchQueue.main.sync {
@@ -28,6 +30,7 @@ class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableVi
                 }else{
                     print("Api is error")
                 }
+                // REVIEW: Không cần hàm return ở đây và ở dưới
                 return
             case .fauilure(let error):
                 print(error)
@@ -56,6 +59,7 @@ class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableVi
         }
     }
     
+    // REVIEW: Căn lại lề. Xóa các dòng trống không cần thiết
     @IBAction func Movie(_ sender: Any) {
         MangaRoute(endpoint: .search1) .request { (top) in
             switch top{
@@ -80,6 +84,13 @@ class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableVi
     
    
     }
+    
+    // REVIEW: Sắp xếp lại thứ tự các hàm như sau:
+    // ViewController's lifecycle (viewDidLoad, viewWillAppear,...)
+    // Setup view
+    // Lấy dữ liệu, gọi API
+    // Action
+    // DataSource và Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -110,6 +121,7 @@ class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableVi
         
     }
     
+    // REVIEW: Đưa datasource và delegate của Tableview ra 2 extensions riêng
     //MARK TabbleView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -122,6 +134,7 @@ class ViewAnime: UIViewController,UITabBarDelegate,UITableViewDelegate,UITableVi
         cell.lblMembres.text = String(describing: arrAnime[indexPath.row].members)
         cell.lblLink.text = arrAnime[indexPath.row].url
         if let urlImg = arrAnime[indexPath.row].image_url{
+            // REVIEW: Kiểm tra nil, không dùng force unwrap thế này
             URLSession.shared.dataTask(with: URL(string: urlImg)!){ data,response,error in
                 guard
                     let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,

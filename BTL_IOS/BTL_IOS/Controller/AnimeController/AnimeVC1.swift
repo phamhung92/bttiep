@@ -10,6 +10,7 @@ import UIKit
 
 class AnimeVC1: UIViewController {
 
+    // REVIEW: Sửa hết warning autolayout ở Main.storyboard đi
     @IBOutlet weak var imgAnime: UIImageView!
     @IBOutlet weak var lblTG: UILabel!
     @IBOutlet weak var lblLink: UILabel!
@@ -18,7 +19,7 @@ class AnimeVC1: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        // REVIEW: Bỏ dòng trống đi
         
         
      

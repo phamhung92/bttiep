@@ -16,7 +16,7 @@ class APITop : BaseModel {
     var members : Int?
     required init(_ json: [String : Any]) {
         super.init()
-        
+        // REVIEW: Không cần phải dùng if let thế này.
         if let title = json["title"] as? String{
             self.title = title
         }

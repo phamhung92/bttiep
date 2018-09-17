@@ -6,8 +6,15 @@
 //  Copyright © 2018 Admin. All rights reserved.
 //
 
+// REVIEW:
+// Trước dấu { thì thêm dấu cách vào
+// Trước dấu : thì không có dấu cách, sau dấu : thì có dấu cách
+// Xóa các dòng trống thừa đi
+// Giữa các hàm thì để 1 dòng trống
+// Tách class này ra làm 2 Router riêng: Manga và Anime để giảm số lượng code đi
 import Foundation
 enum MangaEndpoint{
+    // REVIEW: Sửa lại tên cho gợi nhớ hơn. Ví dụ: search -> upcoming, search1 -> movie
     case search
     case search1
     case search2
@@ -51,6 +58,9 @@ class MangaRoute : BaseRouter{
         self.endpoint  = endpoint
     }
     
+    // REVIEW: Trường hợp giống nhau hết thế này thì không cần switch - case mà return luôn
+    // Trường hợp có nhiều case có chung kết quả thì có thể viết thế này:
+    // case .search, .search1, search2:
     override var method: String {
         switch endpoint{
         case .search :
@@ -101,9 +111,11 @@ class MangaRoute : BaseRouter{
     override func response(json: [String : Any]) -> Any? {
         switch endpoint {
         case .search:
+            // REVIEW: Down cast sang [[String: Any]] luôn
             guard let top = json["top"] as? [Any] else{
                 return nil
             }
+            // REVIEW: Dùng map hoặc compactMap cho ngắn.
             var mangas = [APITop]()
             for i in top{
                 if let dictionary = i as? [String:Any] {
