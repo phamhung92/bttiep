@@ -48,6 +48,8 @@ class MangaHomeVC: UIViewController{
                 }else {
                     print("Api is error")
                 }
+            case .fauilure( _): break
+                
             }
         }
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MangaVC: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
+class MangaVC: UIViewController,UICollectionViewDelegate{
     
     var arr = [APIanh]()
     @IBOutlet weak var img: UIImageView!
@@ -38,6 +38,8 @@ class MangaVC: UIViewController,UICollectionViewDelegate,UICollectionViewDataSou
                 }else {
                     print("Api is error")
                 }
+            case .fauilure(let error):
+                print(error)
             }
         }
     }
@@ -45,9 +47,10 @@ class MangaVC: UIViewController,UICollectionViewDelegate,UICollectionViewDataSou
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
+}
     
     // MARK: - CollectionView
+    extension MangaVC:UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return arr.count
     }
@@ -69,14 +72,4 @@ class MangaVC: UIViewController,UICollectionViewDelegate,UICollectionViewDataSou
             }
         return cell
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

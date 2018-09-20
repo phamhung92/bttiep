@@ -7,10 +7,9 @@
 //
 
 import UIKit
-class AnimeVC1: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
-
-    
+class AnimeVC1: UIViewController {
     var arr = [APIanh]()
+
     @IBOutlet weak var imgAnime: UIImageView!
     @IBOutlet weak var lblTG: UILabel!
     @IBOutlet weak var lblLink: UILabel!
@@ -22,7 +21,7 @@ class AnimeVC1: UIViewController,UICollectionViewDelegate,UICollectionViewDataSo
     //     MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        collection.delegate = self
+        collection.delegate = self as? UICollectionViewDelegate
         collection.dataSource = self
         lblTG.text = name
         lblLink.text = ur
@@ -38,6 +37,7 @@ class AnimeVC1: UIViewController,UICollectionViewDelegate,UICollectionViewDataSo
                 }else {
                     print("Api is error")
                 }
+            case .fauilure( _): break
             }
         }
     }
@@ -46,31 +46,33 @@ class AnimeVC1: UIViewController,UICollectionViewDelegate,UICollectionViewDataSo
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+}
         // MARK: - CollectionView
+    extension AnimeVC1:UICollectionViewDataSource{
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return arr.count
+        }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return arr.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as! CollectionCell
-            if let urlImg = arr[indexPath.row].large{
-                URLSession.shared.dataTask(with: URL(string: urlImg)!){ data,response,error in
-                    guard
-                        let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                        let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                        let data = data, error == nil,
-                        let image = UIImage(data: data)
-                        else { return }
-                    DispatchQueue.main.async() {
-                        cell.imgview.image = image
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as! CollectionCell
+                if let urlImg = arr[indexPath.row].large{
+                    URLSession.shared.dataTask(with: URL(string: urlImg)!){ data,response,error in
+                        guard
+                            let httpURLResponse = response as? HTTPURLResponse,     httpURLResponse.statusCode == 200,
+                            let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                            let data = data, error == nil,
+                            let image = UIImage(data: data)
+                            else { return }
+                        DispatchQueue.main.async() {
+                            cell.imgview.image = image
+                            }
+                        }.resume()
                     }
-                }.resume()
+            return cell
             }
+        }
 
-        return cell
-    }
+
     
     /*
     // MARK: - Navigation
@@ -82,4 +84,4 @@ class AnimeVC1: UIViewController,UICollectionViewDelegate,UICollectionViewDataSo
     }
     */
 
-}
+

@@ -15,8 +15,6 @@ class APIAnime: BaseModel{
     var members: Int?
     required init(_ json: [String : Any]) {
         super.init()
-        
-
         if let title = json["title"] as? String {
             self.title = title
         }

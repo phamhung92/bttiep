@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 enum MangaEndpoint {
     case APItop(type: String,name: String)
     case anime1
@@ -35,16 +36,13 @@ class MangaRoute: BaseRouter {
     var endpoint: MangaEndpoint
     override var url: String {
         switch endpoint {
+
         case .APItop (let type, let name):
             return "https://api.jikan.moe/top/"+"\(type)"+"/1/"+"\(name)"
-//        case .movie :
-//            return "https://api.jikan.moe/top/anime/1/movie"
         case .anime1:
             return "https://api.jikan.moe/v3/anime/1/characters_staff"
-     
         case .anime(let id):
             return "https://api.jikan.moe/v3/anime/" + "\(id)"+"/pictures"
-            
         case .manga1(let id):
             return "https://api.jikan.moe/v3/manga/" + "\(id)"+"/pictures"
         }

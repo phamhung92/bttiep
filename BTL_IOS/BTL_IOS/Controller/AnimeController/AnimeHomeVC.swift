@@ -49,6 +49,8 @@ class AnimeHomeVC: UIViewController,UITabBarDelegate {
                 }else {
                     print("Api is error")
                 }
+            case .fauilure(let error):
+                print(error)
             }
         }
     }

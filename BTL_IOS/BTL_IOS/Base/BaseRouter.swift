@@ -40,6 +40,7 @@ class BaseRouter {
             completion(.fauilure(error: "URL incorrect"))
             return
         }
+ 
         var request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: timeOut)
         request.httpMethod = method
         if let params = parameters {
@@ -77,4 +78,5 @@ class BaseRouter {
 
 enum APIResult {
     case successful(data: Any)
+    case fauilure(error: String)
 }

@@ -14,12 +14,8 @@ class APITop : BaseModel {
     var image_url : String?
     var url : String?
     var members : Int?
-    required init(_ json: [String: Any]) {
+    required init(_ json: [String : Any]) {
         super.init()
-        
-        if let mal_id = json["mal_id"] as? Int {
-            self.mal_id = mal_id
-        }
         if let title = json["title"] as? String {
             self.title = title
         }
@@ -32,8 +28,8 @@ class APITop : BaseModel {
         if let members = json["members"] as? Int {
             self.members = members
         }
-        if let rank = json["rank"] as? Int{
-            self.rank = rank
+        if let mal_id = json["mal_id"] as? Int {
+           self.mal_id = mal_id
         }
     }
 }
