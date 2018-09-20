@@ -14,7 +14,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var tableView: UITableView!
     
     var arrMusic = [MusicModel]()
-    var newarrMusic = [MusicModel]()
+    var 		newarrMusic = [MusicModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,7 +83,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         newarrMusic = arrMusic.filter({ animal -> Bool in
             guard let text = searchBar.text else {return false}
             return (animal.trackName?.contains(text))!
-        })
+     		   })
         if(searchBar.text == ""){
             MusicRouter(endpoint: .search).request { (result) in
                 switch result{

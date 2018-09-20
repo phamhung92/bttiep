@@ -13,6 +13,7 @@ class MangaTableViewCell: UITableViewCell {
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var lblMembres: UILabel!
     @IBOutlet weak var lblLink: UILabel!
+    @IBOutlet weak var lblid: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

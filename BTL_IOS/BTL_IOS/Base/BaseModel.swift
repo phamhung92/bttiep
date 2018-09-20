@@ -7,9 +7,9 @@
 //
 
 import Foundation
-class BaseModel : NSObject{
+class BaseModel: NSObject {
     override init() {
         super.init()
     }
-    required init(_ json : [String:Any]){}
+    required init(_ json: [String:Any]) {}
 }

@@ -10,6 +10,11 @@ import UIKit
 
 class CollectionCell: UICollectionViewCell {
 
+    @IBOutlet weak var imgview: UIImageView!
+
+    class func identifier()->String {
+        return "CollectionCell"
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
